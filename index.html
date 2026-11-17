@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FreeGroup</title>
+<meta name="description" content="免费 AI 学习群，选一个群直接加入。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231B1611'/%3E%3Ccircle cx='16' cy='16' r='9' fill='none' stroke='%23BC9B6A' stroke-width='2'/%3E%3Ccircle cx='16' cy='16' r='2.6' fill='%23BC9B6A'/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   FreeGroup · 样式
+   品牌色沿用 metaver.vip：墨 #1B1611 / 纸 #F7F3EA / 金 #BC9B6A
+   ============================================================ */
+
+:root {
+  --paper: #f7f3ea;
+  --paper-deep: #f1ead9;
+  --ink: #1b1611;
+  --ink-soft: #574c41;
+  --ink-faint: #8a7c6b;
+  --gold: #bc9b6a;
+  --gold-dark: #a97832;
+  --rule: #d8cdb8;
+
+  --serif: Georgia, "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", STSong, SimSun, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* 纸面肌理：极淡的横向纹路，只在视觉上成立，不承载信息 */
+body::before {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  content: "";
+  background-image: repeating-linear-gradient(0deg, rgba(27, 22, 17, 0.014) 0 1px, transparent 1px 3px);
+}
+
+.sheet {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 0 22px 46px;
+}
+
+/* ---------- 页眉 ---------- */
+.masthead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 0 12px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.masthead-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12.5px;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+
+.masthead-brand svg { width: 13px; height: 13px; flex: 0 0 auto; }
+
+.masthead-tag {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.masthead-tag:hover { color: var(--gold-dark); }
+
+/* ---------- 主标题 ---------- */
+.hero { padding: 40px 0 0; }
+
+.hero h1 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(38px, 12vw, 56px);
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -0.01em;
+}
+
+.hero h1 em {
+  font-style: normal;
+  color: var(--gold-dark);
+}
+
+.hero-lead {
+  max-width: 30em;
+  margin: 20px 0 0;
+  font-size: 15.5px;
+  line-height: 1.85;
+  color: var(--ink-soft);
+}
+
+/* ---------- 数字条 ---------- */
+.figures {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 30px 0 0;
+  padding: 16px 0 14px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.figure { padding: 0 2px; }
+
+.figure + .figure { border-left: 1px solid var(--rule); padding-left: 16px; }
+
+.figure dt {
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  color: var(--ink-faint);
+}
+
+.figure dd {
+  margin: 3px 0 0;
+  font-family: var(--mono);
+  font-size: clamp(24px, 7vw, 30px);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+/* ---------- 加入区 ---------- */
+.join { padding: 34px 0 0; }
+
+.section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.section-head h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.section-head .aside {
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+/* 群号选择 */
+.slots {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 7px;
+}
+
+.slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  min-height: 54px;
+  padding: 7px 2px;
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: background-color 0.14s ease, color 0.14s ease, border-color 0.14s ease;
+}
+
+.slot:hover { border-color: var(--gold); }
+
+.slot:focus-visible {
+  outline: 2px solid var(--gold-dark);
+  outline-offset: 2px;
+}
+
+.slot.is-on {
+  color: var(--paper);
+  background: var(--ink);
+  border-color: var(--ink);
+}
+
+.slot.is-off {
+  color: var(--ink-faint);
+  background: var(--paper-deep);
+  border-color: var(--rule);
+  cursor: not-allowed;
+}
+
+.slot-mark {
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.slot-num {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.3;
+  opacity: 0.72;
+}
+
+/* 二维码卡：四角裁切记号是整页唯一刻意的装饰 */
+.qr-card {
+  position: relative;
+  margin: 20px 0 0;
+  padding: 22px;
+  background: #fffdf7;
+  border: 1px solid var(--rule);
+}
+
+.qr-card[hidden] { display: none; }
+
+.crop {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  border: 1px solid var(--gold);
+}
+
+.crop.tl { top: 7px; left: 7px; border-right: 0; border-bottom: 0; }
+.crop.tr { top: 7px; right: 7px; border-left: 0; border-bottom: 0; }
+.crop.bl { bottom: 7px; left: 7px; border-right: 0; border-top: 0; }
+.crop.br { bottom: 7px; right: 7px; border-left: 0; border-top: 0; }
+
+.qr-shell {
+  display: flex;
+  justify-content: center;
+  padding: 6px 0;
+}
+
+.qr-img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(52vw, 214px);
+  max-height: 26vh;
+  object-fit: contain;
+  background: #fff;
+}
+
+.qr-cap {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  line-height: 1.6;
+  text-align: center;
+  color: var(--ink-faint);
+}
+
+.qr-side { display: none; }
+
+/* 主按钮 */
+.cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 54px;
+  margin-top: 14px;
+  padding: 0 18px;
+  font-family: var(--sans);
+  font-size: 15.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--paper);
+  text-align: center;
+  text-decoration: none;
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: 2px;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.cta:hover { background: var(--gold-dark); border-color: var(--gold-dark); }
+
+.cta svg { width: 15px; height: 15px; flex: 0 0 auto; }
+
+.cta.is-off {
+  color: var(--ink-faint);
+  background: var(--paper-deep);
+  border-color: var(--rule);
+  pointer-events: none;
+}
+
+.seat-note {
+  margin: 9px 0 0;
+  font-family: var(--mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--ink-faint);
+  text-align: center;
+}
+
+/* ---------- 群里有什么：账簿式两栏 ---------- */
+.offer { padding: 40px 0 0; }
+
+.ledger { margin: 0; border-top: 1px solid var(--rule); }
+
+.ledger-row {
+  display: grid;
+  grid-template-columns: 5.4em minmax(0, 1fr);
+  gap: 14px;
+  padding: 13px 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.ledger-row dt {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+
+.ledger-row dd {
+  min-width: 0;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--ink-soft);
+}
+
+/* ---------- 群规 ---------- */
+.rules { padding: 34px 0 0; }
+
+.rule-row {
+  margin: 0;
+  padding: 11px 0;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--ink-soft);
+  border-bottom: 1px solid var(--rule);
+}
+
+/* ---------- 主理人 ---------- */
+.owner { padding: 34px 0 0; }
+
+.owner-line {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(17px, 4.6vw, 20px);
+  line-height: 1.68;
+}
+
+.owner-note {
+  margin: 14px 0 0;
+  font-size: 14.5px;
+  line-height: 1.8;
+  color: var(--ink-soft);
+}
+
+.owner-contact {
+  margin: 14px 0 0;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  color: var(--gold-dark);
+}
+
+/* ---------- 页脚 ---------- */
+.colophon {
+  margin-top: 40px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--ink-faint);
+}
+
+.colophon a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--rule); }
+.colophon a:hover { color: var(--gold-dark); border-color: var(--gold); }
+
+.serial {
+  margin: 12px 0 0;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rule);
+}
+
+/* 无脚本时的兜底 */
+.noscript {
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  font-size: 13.5px;
+  line-height: 1.75;
+  color: var(--ink-soft);
+  background: #fffdf7;
+  border: 1px solid var(--gold);
+}
+
+/* ---------- 备用入口 ---------- */
+.alt-wrap {
+  margin-top: 26px;
+}
+
+.alt-wrap[hidden] { display: none; }
+
+.alt-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--ink-faint);
+}
+
+.alt-divider::before,
+.alt-divider::after {
+  flex: 1 1 auto;
+  height: 1px;
+  content: "";
+  background: var(--rule);
+}
+
+.alt-body {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.alt-title {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 16.5px;
+  font-weight: 600;
+}
+
+.alt-text {
+  margin: 7px 0 0;
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: var(--ink-soft);
+}
+
+.alt-id {
+  display: inline-block;
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--gold-dark);
+}
+
+.alt-qr {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 150px;
+  margin: 14px auto 0;
+  border: 1px solid var(--rule);
+}
+
+.alt-qr[hidden] { display: none; }
+
+/* ---------- 平板以上：二维码横排，左右分栏 ---------- */
+@media (min-width: 560px) {
+
+  .sheet { padding: 0 30px 56px; }
+
+  .hero { padding-top: 54px; }
+
+  .slots { gap: 10px; }
+
+  .slot { min-height: 62px; }
+
+  .qr-card { padding: 26px 26px 24px; }
+
+  .qr-layout {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 26px;
+  }
+
+  .qr-shell { padding: 0; }
+
+  .qr-img { max-width: 178px; max-height: none; }
+
+  .qr-cap { display: none; }
+
+  .qr-side { display: block; }
+
+  .qr-side h3 {
+    margin: 0 0 6px;
+    font-family: var(--serif);
+    font-size: 17px;
+    font-weight: 600;
+  }
+
+  .qr-side p {
+    margin: 0;
+    font-size: 13.5px;
+    line-height: 1.75;
+    color: var(--ink-soft);
+  }
+
+  .qr-side .steps {
+    margin: 12px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+    line-height: 1.9;
+    color: var(--ink-faint);
+  }
+
+  .qr-side .steps li { display: flex; gap: 8px; }
+
+  .qr-side .steps .n {
+    flex: 0 0 auto;
+    width: 1.2em;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--gold);
+  }
+
+  .ledger-row { grid-template-columns: 6.2em minmax(0, 1fr); gap: 22px; }
+}
+
+@media (min-width: 860px) {
+  .sheet { max-width: 700px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+
+/* 手机上先给按钮，二维码作为备用 */
+@media (max-width: 559px) {
+  .join-stack { display: flex; flex-direction: column; }
+  .cta { order: -1; margin-top: 16px; }
+  .seat-note { order: 0; }
+  .qr-card { order: 1; margin-top: 16px; }
+}
+</style>
+</head>
+<body>
+<main class="sheet">
+
+  <noscript>
+    <div class="noscript">群列表靠脚本渲染，你的浏览器关掉了 JavaScript，所以下面看不到群。打开 JS 后刷新，或直接在飞书里搜群名。</div>
+  </noscript>
+
+  <!-- ============ 页眉 ============ -->
+  <header class="masthead">
+    <a class="masthead-brand" id="brand" href="#" target="_blank" rel="noopener">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13" fill="none" stroke="#BC9B6A" stroke-width="2"/><circle cx="16" cy="16" r="3" fill="#1B1611"/></svg>
+      <span>AI 酋长 Andy</span>
+    </a>
+    <a class="masthead-tag" href="https://github.com/AIPMAndy/FreeGroup" target="_blank" rel="noopener">FreeGroup · 开源</a>
+  </header>
+
+  <!-- ============ 标题 ============ -->
+  <section class="hero">
+    <h1>AI 学习圈<em>，</em><br>不收费的那种</h1>
+    <p class="hero-lead" id="lead"></p>
+  </section>
+
+  <!-- ============ 数字 ============ -->
+  <dl class="figures">
+    <div class="figure">
+      <dt>群</dt>
+      <dd id="fig-groups">—</dd>
+    </div>
+    <div class="figure">
+      <dt>成员</dt>
+      <dd id="fig-members">—</dd>
+    </div>
+    <div class="figure">
+      <dt>费用</dt>
+      <dd>0</dd>
+    </div>
+  </dl>
+
+  <!-- ============ 加入 ============ -->
+  <section class="join">
+    <div class="section-head">
+      <h2>选一个群</h2>
+      <span class="aside" id="join-aside">自动挑人最少的</span>
+    </div>
+
+    <div class="slots" id="slots" role="group" aria-label="选择要加入的群"></div>
+
+    <div class="join-stack">
+      <a class="cta" id="cta" href="#">
+        <span id="cta-text">加入群聊</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M5 12h13"/><path d="M12.5 5.5 19 12l-6.5 6.5"/></svg>
+      </a>
+      <p class="seat-note" id="seat-note">—</p>
+
+      <div class="qr-card" id="qr-card">
+        <span class="crop tl"></span><span class="crop tr"></span><span class="crop bl"></span><span class="crop br"></span>
+        <div class="qr-layout">
+          <div class="qr-shell">
+            <img class="qr-img" id="qr-img" src="" alt="群二维码">
+          </div>
+          <div class="qr-side">
+            <h3 id="qr-side-title">飞书扫码入群</h3>
+            <p id="qr-side-text">扫的是你选中的那个群。群满了就换旁边一个，别重复占位。</p>
+            <ul class="steps">
+              <li><span class="n">1</span><span>手机：直接点上面的按钮，唤起飞书</span></li>
+              <li><span class="n">2</span><span>电脑：用飞书扫左边的二维码</span></li>
+              <li><span class="n">3</span><span>还没装飞书？下载后用手机号注册即可</span></li>
+            </ul>
+          </div>
+        </div>
+        <p class="qr-cap" id="qr-cap">电脑上用飞书扫这个码<br>手机直接点上面的按钮</p>
+      </div>
+    </div>
+
+    <div class="alt-wrap" id="alt-wrap" hidden>
+      <div class="alt-divider"><span id="alt-divider">或者</span></div>
+      <div class="alt-body">
+        <p class="alt-title" id="alt-title"></p>
+        <p class="alt-text" id="alt-text"></p>
+        <span class="alt-id" id="alt-id"></span>
+        <img class="alt-qr" id="alt-qr" src="" alt="微信二维码" hidden>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 群里有什么 ============ -->
+  <section class="offer">
+    <div class="section-head">
+      <h2>群里有什么</h2>
+      <span class="aside">不发课程表，只发过程</span>
+    </div>
+    <dl class="ledger" id="ledger"></dl>
+  </section>
+
+  <!-- ============ 群规 ============ -->
+  <section class="rules">
+    <div class="section-head"><h2>三条群规</h2></div>
+    <div id="rules"></div>
+  </section>
+
+  <!-- ============ 主理人 ============ -->
+  <section class="owner">
+    <div class="section-head"><h2>谁在管这个群</h2></div>
+    <p class="owner-line" id="owner-line"></p>
+    <p class="owner-note" id="owner-note"></p>
+    <p class="owner-contact" id="owner-contact"></p>
+  </section>
+
+  <!-- ============ 页脚 ============ -->
+  <footer class="colophon">
+    <p id="colophon-note" style="margin:0"></p>
+    <p class="serial" id="serial" style="margin:12px 0 0"></p>
+  </footer>
+
+</main>
+
+<script src="config.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var C = window.FREEGROUP;
+  if (!C || !Array.isArray(C.groups) || !C.groups.length) {
+    document.body.innerHTML = '<p style="padding:48px 24px;font:16px/1.7 sans-serif">没有读到 config.js，或者 groups 是空的。</p>';
+    return;
+  }
+
+  var site = C.site || {};
+  var groups = C.groups;
+
+  /* ---------- 文本 ---------- */
+  document.title = site.title || "FreeGroup";
+  if (site.lead) document.getElementById("lead").textContent = site.lead;
+  if (site.brand) document.querySelector(".masthead-brand span").textContent = site.brand;
+  if (site.brandUrl) document.getElementById("brand").setAttribute("href", site.brandUrl);
+
+  /* 数字全部从配置算出来，不写死 */
+  var totalMembers = groups.reduce(function (sum, g) { return sum + (Number(g.members) || 0); }, 0);
+  var openGroups = groups.filter(function (g) { return g.status === "open"; });
+  document.getElementById("fig-groups").textContent = groups.length;
+  document.getElementById("fig-members").textContent = totalMembers.toLocaleString("zh-CN");
+
+  /* ---------- 群选择 ---------- */
+  var slotsRoot = document.getElementById("slots");
+  var qrCard = document.getElementById("qr-card");
+  var qrImg = document.getElementById("qr-img");
+  var cta = document.getElementById("cta");
+  var ctaText = document.getElementById("cta-text");
+  var seatNote = document.getElementById("seat-note");
+  var aside = document.getElementById("join-aside");
+  var buttons = [];
+  var current = -1;
+  var anyOpen = openGroups.length > 0;
+
+  function remaining(g) {
+    return Math.max(0, (Number(g.capacity) || 0) - (Number(g.members) || 0));
+  }
+
+  function select(index) {
+    var g = groups[index];
+    if (!g) return;
+    current = index;
+
+    var usable = g.status === "open";
+
+    if (g.url && usable) {
+      cta.setAttribute("href", g.url);
+      cta.target = "_blank";
+      cta.rel = "noopener";
+      cta.classList.remove("is-off");
+    } else {
+      cta.setAttribute("href", "javascript:void(0)");
+      cta.classList.add("is-off");
+    }
+
+    ctaText.textContent = usable
+      ? "加入 " + g.name
+      : (anyOpen ? "这个群满了，换一个" : "全部满员了，等新群");
+
+    if (usable) {
+      seatNote.textContent = "还剩 " + remaining(g) + " 席 / 上限 " + g.capacity;
+    } else {
+      seatNote.textContent = g.status === "full" ? "已满 " + g.capacity + " / " + g.capacity : "暂停加入";
+    }
+
+    if (g.qr) {
+      qrImg.setAttribute("src", g.qr);
+      qrImg.setAttribute("alt", g.name + " 的群二维码");
+      qrCard.removeAttribute("hidden");
+      document.getElementById("qr-cap").innerHTML =
+        "电脑上用飞书扫这个码<br>手机直接点上面的按钮";
+    } else {
+      qrCard.setAttribute("hidden", "hidden");
+    }
+
+    buttons.forEach(function (btn, i) {
+      var on = i === index;
+      btn.classList.toggle("is-on", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+
+  groups.forEach(function (g, index) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "slot" + (g.status === "open" ? "" : " is-off");
+    btn.setAttribute("aria-pressed", "false");
+    btn.setAttribute("aria-label", g.name);
+
+    var mark = document.createElement("span");
+    mark.className = "slot-mark";
+    mark.textContent = g.id || (index + 1);
+
+    var num = document.createElement("span");
+    num.className = "slot-num";
+    num.textContent = g.status === "open" ? g.members : "满";
+
+    btn.appendChild(mark);
+    btn.appendChild(num);
+    btn.addEventListener("click", function () { select(index); });
+
+    slotsRoot.appendChild(btn);
+    buttons.push(btn);
+  });
+
+  /* 默认落在人最少的可用群；全满就退回第一个，让按钮自己说明状态 */
+  if (openGroups.length) {
+    var lightest = openGroups.reduce(function (a, b) {
+      return (a.members || 0) <= (b.members || 0) ? a : b;
+    });
+    select(groups.indexOf(lightest));
+  } else {
+    aside.textContent = "全部满员";
+    select(0);
+  }
+
+  /* ---------- 备用入口 ---------- */
+  var alt = C.alt || {};
+  if (alt.enabled) {
+    var altWrap = document.getElementById("alt-wrap");
+    if (alt.divider) document.getElementById("alt-divider").textContent = alt.divider;
+    if (alt.title) document.getElementById("alt-title").textContent = alt.title;
+    if (alt.text) document.getElementById("alt-text").textContent = alt.text;
+    if (alt.id) document.getElementById("alt-id").textContent = alt.id;
+    if (alt.qr) {
+      var altQr = document.getElementById("alt-qr");
+      altQr.setAttribute("src", alt.qr);
+      altQr.setAttribute("alt", "微信二维码");
+      altQr.removeAttribute("hidden");
+    }
+    altWrap.removeAttribute("hidden");
+  }
+
+  /* ---------- 群里有什么 ---------- */
+  var ledger = document.getElementById("ledger");
+  (C.offer || []).forEach(function (item) {
+    var row = document.createElement("div");
+    row.className = "ledger-row";
+
+    var dt = document.createElement("dt");
+    dt.textContent = item.title;
+
+    var dd = document.createElement("dd");
+    dd.textContent = item.text;
+
+    row.appendChild(dt);
+    row.appendChild(dd);
+    ledger.appendChild(row);
+  });
+
+  /* ---------- 群规 ---------- */
+  var rulesRoot = document.getElementById("rules");
+  (C.rules || []).forEach(function (text) {
+    var p = document.createElement("p");
+    p.className = "rule-row";
+    p.textContent = text;
+    rulesRoot.appendChild(p);
+  });
+
+  /* ---------- 主理人 ---------- */
+  var o = C.owner || {};
+  if (o.line) {
+    document.getElementById("owner-line").textContent =
+      (o.name ? o.name + "，" : "") + o.line;
+  }
+  if (o.note) document.getElementById("owner-note").textContent = o.note;
+  if (o.contact) document.getElementById("owner-contact").textContent = o.contact;
+
+  /* ---------- 页脚 ---------- */
+  var f = C.footer || {};
+  if (f.project) {
+    document.getElementById("colophon-note").innerHTML =
+      '用 <a href="' + (f.projectUrl || "#") + '" target="_blank" rel="noopener">' + f.project +
+      '</a> 搭的。' + (f.projectNote || "");
+  }
+  document.getElementById("serial").textContent =
+    "fg · " + String(groups.length).padStart(2, "0") + " groups · " +
+    totalMembers + " members · license mit";
+})();
+</script>
+</body>
+</html>
