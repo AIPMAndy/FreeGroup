@@ -852,7 +852,14 @@ body::before {
     document.getElementById("owner-line").textContent =
       (o.name ? o.name + "，" : "") + o.line;
   }
-  if (o.note) document.getElementById("owner-note").textContent = o.note;
+
+  var noteEl = document.getElementById("owner-note");
+  if (o.note) {
+    noteEl.textContent = o.note;
+  } else {
+    noteEl.setAttribute("hidden", "hidden");
+  }
+
   if (o.contact) document.getElementById("owner-contact").textContent = o.contact;
 
   /* ---------- 页脚 ---------- */
